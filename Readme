@@ -1,0 +1,10 @@
+= Preparation =
+git submodule init
+git submodule update
+
+= Requirement =
+* Netbeans 7.3
+* Java 1.6.0
+
+= Workflow =
+# Open ''fc_animation_gen''

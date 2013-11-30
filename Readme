@@ -8,3 +8,5 @@ git submodule update
 
 = Workflow =
 # Open ''fc_animation_gen''
+# Create an "Java Plattform", named "JDK 1.6"
+# Open all referenced projects and rebuild them

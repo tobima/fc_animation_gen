@@ -10,3 +10,20 @@ git submodule update
 # Open ''fc_animation_gen''
 # Create an "Java Plattform", named "JDK 1.6"
 # Open all referenced projects and rebuild them
+
+== Usage ==
+ -? (--help)        : print usage
+ -d (--dimm) N      : dimm value 0.00 - 1.00. Default is 1.00
+ -f (--fps) N       : frames per second for in seqence file
+ -g (--gui)         : should the applicatin starts with gui
+ -h (--height) N    : height in pixels. Default is 12 ppixels.
+ -o (--output) FILE : output file for the sequence
+ -r (--remote) VAL  : ip address or hostname of the fc server
+ -s (--sleep) N     : sleep time between frames
+ -t (--time) N      : time to run in miliseconds. 0 or default is inity
+ -u (--osx) N       : x oscilator
+ -v (--osy) N       : y oscilator
+ -w (--width) N     : width in pixels. Default is 10 ppixels.
+ -x (--offsetx) N   : x start postition.
+ -y (--offsety) N   : y start position
+

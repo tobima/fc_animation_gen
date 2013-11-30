@@ -1,0 +1,26 @@
+
+JTexGen - Procedural Texture Generation Library
+=========================================================
+version 1.01, April 2009
+
+This software is distributed under the terms of the FSF Lesser Gnu
+Public License (see lgpl.txt). 
+
+Release Notes - JTexGen - Version 1.01
+
+* Switched over to use Imrpoved Noise, the reference implementation
+* Updated documentation with new noise images
+* Fixed some of the examples that were wrong after the noise parameters were re-ordered
+* Removed the polkadot from the docs since they came our regular, not random with the new noise
+* Removed redundant images from the documentation - smaller distribution
+* Fixed the different releases (all, no docs, docs only)
+* 
+
+
+
+
+Release Notes - JTexGen - Version 1.0
+--------------
+* Prepped and polished for release, 
+* Initial Release
+

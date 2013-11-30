@@ -1,0 +1,160 @@
+<html><head><META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Chapter&nbsp;5.&nbsp;Quick Tips</title><link href="style.css" rel="stylesheet" type="text/css"><meta content="DocBook XSL Stylesheets V1.73.2" name="generator"><link rel="start" href="index.html" title="JTexGen Procedural Texture Library"><link rel="up" href="index.html" title="JTexGen Procedural Texture Library"><link rel="prev" href="ch04.html" title="Chapter&nbsp;4.&nbsp;Textured Tiger Burning Bright"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table summary="Navigation header" width="100%"><tr><th align="center" colspan="3">Chapter&nbsp;5.&nbsp;Quick Tips</th></tr><tr><td align="left" width="20%"><a accesskey="p" href="ch04.html">Prev</a>&nbsp;</td><th align="center" width="60%">&nbsp;</th><td align="right" width="20%">&nbsp;</td></tr></table><hr></div><div class="chapter" lang="en"><div class="titlepage"><div><div><h2 class="title"><a name="QuickTips"></a>Chapter&nbsp;5.&nbsp;Quick Tips</h2></div></div></div><div class="toc"><p><b>Table of Contents</b></p><dl><dt><span class="sect1"><a href="ch05.html#N105D5">5.1. Modifying UV</a></span></dt><dt><span class="sect1"><a href="ch05.html#N105EB">5.2. Build things slowly and Modularly</a></span></dt><dt><span class="sect1"><a href="ch05.html#N105F0">5.3. Thread Safety</a></span></dt><dt><span class="sect1"><a href="ch05.html#N105FD">5.4. 
+				Inherit from
+				<code class="code">AbstractTexture</code>
+				and
+				<code class="code">AbstractSignal</code>
+			</a></span></dt><dt><span class="sect1"><a href="ch05.html#N10622">5.5. Some quick suggestions</a></span></dt></dl></div><p>
+			This section offers some quick ideas on building textures
+			and navigating the built-in textures.
+		</p><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="N105D5"></a>5.1.&nbsp;Modifying UV</h2></div></div></div><p>
+				You can modify the UV values a number of ways, scaling
+				will make the texture or signal change faster or slower
+				over your texture. Displacing UV values puts a different
+				piece of the texture in the original UV space and can be
+				useful for layering similar textures with the same scale
+				so there is no similarity to the textures. Texture UV
+				values can be translated, rotated and scaled using the
+				textures in the package
+				<code class="code">org.texgen.textures.uv</code>
+				. There are also other textures which can be used to
+				alter the UV values. The
+				<code class="code">UVNoiseTranslate</code>
+				texture takes a texture and calls it with UV values that
+				have been 'jiggled' around using a noise function. This
+				can roughen the soft edges of some of the textures if
+				needed. You can usually chain textures together making
+				it easy to create textures with modified UV values i.e.
+				<code class="code">texture = new UVScale(texture,2,2);</code>
+				. This takes the original texture and 'zooms out' of it
+				by a scale of 2.
+			</p><p>
+				For signals, the
+				<code class="code">org.texgen.signals.modifier</code>
+				package contains a number of UV modification signals (
+				<code class="code">SignalUv Scale/Rotate/Translate</code>
+				). There are also a number of other functions that can
+				be applied to the output signals such as scaling,
+				multiplying, clamping and inverting the output signal
+				value.
+			</p></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="N105EB"></a>5.2.&nbsp;Build things slowly and Modularly</h2></div></div></div><p>
+				It is often best to build complex textures or signals
+				slowly with a continual lookout for making the texture
+				modular. It is often fairly easy to refactor a texture
+				to remove a fixed calculation and put it in either
+				another texture or a signal. In general, if you pass a
+				color to a texture, consider passing a texture instead
+				with an overload for passing in a color which creates a
+				solid color texture. Similarly, if you pass a constant
+				float value, consider letting the user pass in a channel
+				signal since it can be computed each time you need a
+				color value. With the marble texture, instead of taking
+				a color as the input, it was changed so that you can
+				pass a texture instead. With the Mandelbrot texture,
+				rather than having the fractal calculation in the actual
+				texture, we put it in the channel signal so we can
+				re-use it in different places. Refactoring is often easy
+				and allows for easier testing in many ways. If you have
+				a texture made up of multiple internal textures, you can
+				make those textures parameters and evaluate them outside
+				of the main texture. This will also make the final
+				texture more flexible and promote re-usability.
+			</p></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="N105F0"></a>5.3.&nbsp;Thread Safety</h2></div></div></div><p>
+				Keeping things thread safe is fairly easy. Declare your
+				private member variables as
+				<code class="code">final</code>
+				and initialize them in the constructor only. If you pass
+				a color in to the texture, defensively copy it, unless
+				you are planning on wrapping it in a
+				<code class="code">SolidTexture</code>
+				texture since this texture defensively copies the color
+				anyway.
+			</p><p>
+				The goal is to make the class immutable so it cannot be
+				changed once created. Once it is immutable to the
+				outside world, ensure that you don't write code to
+				change the class internally which would break the thread
+				safety.
+			</p></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="N105FD"></a>5.4.&nbsp;
+				Inherit from
+				<code class="code">AbstractTexture</code>
+				and
+				<code class="code">AbstractSignal</code>
+			</h2></div></div></div><p>
+				These two classes contain some helpful functions which
+				can be used by your code. They both contain a static
+				reference to an instance of the
+				<code class="code">PerlinNoise</code>
+				class which is often used. There are also functions such
+				as
+				<code class="code">calculateValue</code>
+				,
+				<code class="code">calculateColorFromTexture</code>
+				and
+				<code class="code">calculateValueFromSignal</code>
+				which take signals or textures as input, as well as a UV
+				pair and returns the value. It also handles null checks
+				and returns sensible results in case they are null.
+			</p><p>
+				The
+				<code class="code">org.texgen.textures.ChainedChannelSignal</code>
+				can be useful when you are using one channel signal as
+				input to another. This class will take a signal as a
+				construction parameter, which you can then call in your
+				own signal using the
+				<code class="code">getSource()</code>
+				method to obtain the instance. For an example on using
+				this mechanism, check out the
+				<code class="code">org.texgen.signals.modifier.ClampSignal</code>
+				or the
+				<code class="code">org.texgen.signals.modifier.InvertSignal</code>
+				.
+			</p></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="N10622"></a>5.5.&nbsp;Some quick suggestions</h2></div></div></div><p>
+				Use the
+				<code class="code">AlphaSignal</code>
+				texture to take a color or texture and make it
+				transparent according to a
+				<code class="code">ChannelSignal</code>
+				. Similarly, to get this texture on a colored
+				background, use the
+				<code class="code">org.texgen.textures.color.Background</code>
+				texture as it overlays a texture on top of a solid color
+				(or texture). If you want to see what a signal looks
+				like, or just want to create a heightmap from a signal,
+				use the
+				<code class="code">ChannelSignalTexture</code>
+				texture with just one signal as the parameter. This will
+				create a grayscale image representing the signal values
+				between 0 and 1.
+			</p><p>
+				Using the
+				<code class="code">Dirty</code>
+				texture can add an element of realism to a texture by
+				scuffing it up a little. Use the scale parameter to
+				control how much noise is applied to the final texture.
+			</p><p>
+				When parameters for noise are specified they are
+				<span class="emphasis"><em>usually</em></span>
+				in the order of
+				<code class="code">scale</code>
+				,
+				<code class="code">octaves</code>
+				, and then
+				<code class="code">scale</code>
+				. If they are not in that order let me know and I'll
+				change it. Scale is usually in the range 0 to 1, often
+				1.
+			</p><p>
+				I only just switched from my own noise implementation to
+				the one defined in
+				<code class="code">ImprovedNoise.java</code>
+				but I still wrap it in the
+				<code class="code">PerlinNoise</code>
+				class. The improved noise uses three dimensions, whereas
+				we mostly use only two, so we can probably optimise the
+				function for two dimensions. This is something I'll try
+				and look at in the future.
+			</p><p>
+				Lastly, if you come up with cool textures, or channel
+				signal implementations, let me know and I'll include
+				them in the final package. Enjoy!
+			</p></div></div><div class="navfooter"><hr><table summary="Navigation footer" width="100%"><tr><td align="left" width="40%"><a accesskey="p" href="ch04.html">Prev</a>&nbsp;</td><td align="center" width="20%">&nbsp;</td><td align="right" width="40%">&nbsp;</td></tr><tr><td valign="top" align="left" width="40%">Chapter&nbsp;4.&nbsp;Textured Tiger Burning Bright&nbsp;</td><td align="center" width="20%"><a accesskey="h" href="index.html">Home</a></td><td valign="top" align="right" width="40%">&nbsp;</td></tr></table></div></body></html>

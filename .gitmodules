@@ -1,0 +1,3 @@
+[submodule "fc_client"]
+	path = fc_client
+	url = https://github.com/C3MA/FC_JavaClient.git
